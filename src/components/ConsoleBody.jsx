@@ -37,7 +37,7 @@ const ConsoleBody = ({ children }) => {
 
         {/* Main Console Body */}
         <div 
-          className={`relative w-full h-full max-w-[calc(100dvh*350/580)] max-h-[calc(100vw*580/350)] sm:w-[350px] sm:h-[580px] rounded-[6px] shadow-[0_20px_50px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col items-center select-none touch-none transition-colors duration-500 z-10 ${shellBg}`}
+          className={`relative w-[100vw] h-[calc(100vw*580/350)] max-w-[calc(100dvh*350/580)] max-h-[100dvh] sm:max-w-none sm:max-h-none sm:w-[350px] sm:h-[580px] sm:rounded-[6px] shadow-[0_20px_50px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col items-center select-none touch-none transition-colors duration-500 z-10 ${shellBg}`}
           style={{ boxShadow: `0 30px 60px -15px rgba(0,0,0,0.4), ${edgeShadow}` }}
         >
           
