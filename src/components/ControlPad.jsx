@@ -181,31 +181,6 @@ const ControlPad = () => {
         </div>
       </div>
 
-      {/* System Buttons (Bottom Center) */}
-      <div className="flex justify-center items-center space-x-5 mt-auto mb-2">
-        
-        {/* Select */}
-        <button 
-          onPointerDown={() => updateInput('select', true)} onPointerUp={() => updateInput('select', false)} onPointerLeave={() => updateInput('select', false)}
-          className={`w-3.5 h-3.5 rounded-full ${systemBg} ${systemWell} transition-transform duration-75 ${inputState.select ? 'scale-90' : ''}`}
-        />
-
-        {/* Analogue (Home) Logo Button */}
-        <button 
-          className={`w-[1.1rem] h-[1.1rem] rounded-full ${systemBg} ${systemWell} transition-transform duration-75 flex items-center justify-center`}
-        >
-           {/* Tiny Analogue symbol */}
-           <div className={`w-1.5 h-1.5 rounded-tl-sm rounded-br-sm rotate-45 ${isWhite ? 'bg-[#a0a0a0]' : isGrey ? 'bg-[#222]' : 'bg-[#333]'}`}></div>
-        </button>
-
-        {/* Start */}
-        <button 
-          onPointerDown={() => updateInput('start', true)} onPointerUp={() => updateInput('start', false)} onPointerLeave={() => updateInput('start', false)}
-          className={`w-3.5 h-3.5 rounded-full ${systemBg} ${systemWell} transition-transform duration-75 ${inputState.start ? 'scale-90' : ''}`}
-        />
-        
-      </div>
-
     </div>
   );
 };

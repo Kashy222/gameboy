@@ -58,16 +58,7 @@ const ConsoleBody = ({ children }) => {
               ></button>
             </div>
             
-            {/* Theme Toggle */}
-            <div className="flex flex-col items-center space-y-1.5">
-              <span className={`text-[7px] font-sans font-bold tracking-[0.2em] uppercase ${isWhite ? 'text-[#a0a0a0]' : 'text-[#444]'}`}>Theme</span>
-              <button 
-                onClick={toggleColor} 
-                className={`w-3 h-3 rounded-full flex-shrink-0 ${isWhite ? 'bg-[#bbb]' : 'bg-[#151515]'} ${isWhite ? 'shadow-[inset_1px_1px_2px_rgba(0,0,0,0.2),1px_1px_1px_rgba(255,255,255,1)]' : 'shadow-[inset_1px_1px_2px_rgba(0,0,0,0.8),1px_1px_1px_rgba(255,255,255,0.05)]'} focus:outline-none flex items-center justify-center transition-transform hover:scale-105 active:scale-95 touch-none`}
-              >
-                <div className="w-1.5 h-1.5 rounded-full bg-[#111] opacity-50"></div>
-              </button>
-            </div>
+
             
             {/* Start Button */}
             <div className="flex flex-col items-center space-y-1.5">
