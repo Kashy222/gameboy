@@ -35,6 +35,26 @@ const EmulatorWrapper = () => {
     window.EJS_core = core;
     window.EJS_gameUrl = URL.createObjectURL(romFile);
     window.EJS_pathtodata = 'https://raw.githack.com/EmulatorJS/EmulatorJS/main/data/';
+    window.EJS_startOnLoaded = true;
+    window.EJS_Buttons = {
+      playPause: false, restart: false, mute: false, settings: false, 
+      fullscreen: false, saveState: false, loadState: false, reset: false, controls: false
+    };
+
+    // Inject CSS to aggressively hide EmulatorJS virtual touch gamepad
+    const style = document.createElement('style');
+    style.id = 'ejs-hide-gamepad';
+    style.innerHTML = `
+      #game-container svg, 
+      #game-container .ejs-touch-controls,
+      #game-container .ejs-virtual-gamepad,
+      #game-container div[style*="border-radius: 50%"] {
+        display: none !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+    `;
+    document.head.appendChild(style);
 
     const script = document.createElement('script');
     script.src = 'https://raw.githack.com/EmulatorJS/EmulatorJS/main/data/loader.js';
@@ -42,6 +62,8 @@ const EmulatorWrapper = () => {
 
     return () => {
       if (script.parentNode) script.parentNode.removeChild(script);
+      const injectedStyle = document.getElementById('ejs-hide-gamepad');
+      if (injectedStyle) injectedStyle.remove();
       URL.revokeObjectURL(window.EJS_gameUrl);
     };
   }, [isPlaying, romFile, core, webMode]);
