@@ -110,7 +110,7 @@ const ControlPad = () => {
       <div className="flex justify-between items-start mt-4 px-2">
         
         {/* D-Pad */}
-        <div className="relative w-28 h-28 transform scale-100 sm:scale-105 origin-left">
+        <div className="relative w-28 h-28 transform scale-[1.3] sm:scale-110 origin-left ml-2">
           {/* Cross shaped well indentation */}
           <div className="absolute inset-0">
              <div className={`absolute top-0 left-9 w-[2.5rem] h-28 rounded-sm ${wellShadow}`}></div>
@@ -159,7 +159,7 @@ const ControlPad = () => {
         </div>
 
         {/* 4 Action Buttons (Diamond Layout) */}
-        <div className="relative w-28 h-28 transform scale-100 sm:scale-105 origin-right">
+        <div className="relative w-28 h-28 transform scale-[1.3] sm:scale-110 origin-right mr-2">
           {/* Circular wells */}
           <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-9 h-9 rounded-full ${wellShadow}`}></div>
           <div className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-9 h-9 rounded-full ${wellShadow}`}></div>
