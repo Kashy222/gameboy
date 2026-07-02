@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme {
+  --color-gameboy-body: #e5e7eb;
+  --color-gameboy-dark: #1f2937;
+  --color-btn-a: #ef4444; /* Red */
+  --color-btn-b: #eab308; /* Yellow */
+  --color-btn-x: #1d4ed8; /* Dark Blue */
+  --color-btn-y: #4d7c0f; /* Dark Green */
+}
+
+@layer utilities {
+  .crt-scanlines {
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background-size: 100% 4px, 6px 100%;
+    pointer-events: none;
+  }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #0f172a; /* Slate 900 for desktop backdrop */
+  overflow: hidden; /* Prevent scrolling, snug fit */
+  overscroll-behavior: none;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  touch-action: none; /* Crucial for custom touch handling */
+}
