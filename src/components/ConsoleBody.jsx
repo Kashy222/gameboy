@@ -45,27 +45,41 @@ const ConsoleBody = ({ children }) => {
           <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-white/5 to-transparent mix-blend-overlay"></div>
 
           {/* System Buttons */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-6 items-center">
-            <button 
-              onPointerDown={(e) => { e.preventDefault(); updateInput('select', true); }}
-              onPointerUp={(e) => { e.preventDefault(); updateInput('select', false); }}
-              onPointerLeave={(e) => { e.preventDefault(); updateInput('select', false); }}
-              className={`w-6 h-2.5 rounded-full flex-shrink-0 ${isWhite ? 'bg-[#bbb]' : 'bg-[#151515]'} ${isWhite ? 'shadow-[inset_1px_1px_2px_rgba(0,0,0,0.2),1px_1px_1px_rgba(255,255,255,1)]' : 'shadow-[inset_1px_1px_2px_rgba(0,0,0,0.8),1px_1px_1px_rgba(255,255,255,0.05)]'} focus:outline-none transition-transform hover:scale-105 ${inputState?.select ? 'scale-95 translate-y-[1px]' : ''} active:scale-95 touch-none`}
-            ></button>
+          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex space-x-6 items-end">
             
-            <button 
-              onClick={toggleColor} 
-              className={`w-3 h-3 rounded-full flex-shrink-0 ${isWhite ? 'bg-[#bbb]' : 'bg-[#151515]'} ${isWhite ? 'shadow-[inset_1px_1px_2px_rgba(0,0,0,0.2),1px_1px_1px_rgba(255,255,255,1)]' : 'shadow-[inset_1px_1px_2px_rgba(0,0,0,0.8),1px_1px_1px_rgba(255,255,255,0.05)]'} focus:outline-none flex items-center justify-center transition-transform hover:scale-105 active:scale-95 touch-none`}
-            >
-              <div className="w-1.5 h-1.5 rounded-full bg-[#111] opacity-50"></div>
-            </button>
+            {/* Select Button */}
+            <div className="flex flex-col items-center space-y-1.5">
+              <span className={`text-[7px] font-sans font-bold tracking-[0.2em] uppercase ${isWhite ? 'text-[#a0a0a0]' : 'text-[#444]'}`}>Select</span>
+              <button 
+                onPointerDown={(e) => { e.preventDefault(); updateInput('select', true); }}
+                onPointerUp={(e) => { e.preventDefault(); updateInput('select', false); }}
+                onPointerLeave={(e) => { e.preventDefault(); updateInput('select', false); }}
+                className={`w-7 h-2.5 rounded-full flex-shrink-0 ${isWhite ? 'bg-[#bbb]' : 'bg-[#151515]'} ${isWhite ? 'shadow-[inset_1px_1px_2px_rgba(0,0,0,0.2),1px_1px_1px_rgba(255,255,255,1)]' : 'shadow-[inset_1px_1px_2px_rgba(0,0,0,0.8),1px_1px_1px_rgba(255,255,255,0.05)]'} focus:outline-none transition-transform hover:scale-105 ${inputState?.select ? 'scale-95 translate-y-[1px]' : ''} active:scale-95 touch-none`}
+              ></button>
+            </div>
             
-            <button 
-              onPointerDown={(e) => { e.preventDefault(); updateInput('start', true); }}
-              onPointerUp={(e) => { e.preventDefault(); updateInput('start', false); }}
-              onPointerLeave={(e) => { e.preventDefault(); updateInput('start', false); }}
-              className={`w-6 h-2.5 rounded-full flex-shrink-0 ${isWhite ? 'bg-[#bbb]' : 'bg-[#151515]'} ${isWhite ? 'shadow-[inset_1px_1px_2px_rgba(0,0,0,0.2),1px_1px_1px_rgba(255,255,255,1)]' : 'shadow-[inset_1px_1px_2px_rgba(0,0,0,0.8),1px_1px_1px_rgba(255,255,255,0.05)]'} focus:outline-none transition-transform hover:scale-105 ${inputState?.start ? 'scale-95 translate-y-[1px]' : ''} active:scale-95 touch-none`}
-            ></button>
+            {/* Theme Toggle */}
+            <div className="flex flex-col items-center space-y-1.5">
+              <span className={`text-[7px] font-sans font-bold tracking-[0.2em] uppercase ${isWhite ? 'text-[#a0a0a0]' : 'text-[#444]'}`}>Theme</span>
+              <button 
+                onClick={toggleColor} 
+                className={`w-3 h-3 rounded-full flex-shrink-0 ${isWhite ? 'bg-[#bbb]' : 'bg-[#151515]'} ${isWhite ? 'shadow-[inset_1px_1px_2px_rgba(0,0,0,0.2),1px_1px_1px_rgba(255,255,255,1)]' : 'shadow-[inset_1px_1px_2px_rgba(0,0,0,0.8),1px_1px_1px_rgba(255,255,255,0.05)]'} focus:outline-none flex items-center justify-center transition-transform hover:scale-105 active:scale-95 touch-none`}
+              >
+                <div className="w-1.5 h-1.5 rounded-full bg-[#111] opacity-50"></div>
+              </button>
+            </div>
+            
+            {/* Start Button */}
+            <div className="flex flex-col items-center space-y-1.5">
+              <span className={`text-[7px] font-sans font-bold tracking-[0.2em] uppercase ${isWhite ? 'text-[#a0a0a0]' : 'text-[#444]'}`}>Start</span>
+              <button 
+                onPointerDown={(e) => { e.preventDefault(); updateInput('start', true); }}
+                onPointerUp={(e) => { e.preventDefault(); updateInput('start', false); }}
+                onPointerLeave={(e) => { e.preventDefault(); updateInput('start', false); }}
+                className={`w-7 h-2.5 rounded-full flex-shrink-0 ${isWhite ? 'bg-[#bbb]' : 'bg-[#151515]'} ${isWhite ? 'shadow-[inset_1px_1px_2px_rgba(0,0,0,0.2),1px_1px_1px_rgba(255,255,255,1)]' : 'shadow-[inset_1px_1px_2px_rgba(0,0,0,0.8),1px_1px_1px_rgba(255,255,255,0.05)]'} focus:outline-none transition-transform hover:scale-105 ${inputState?.start ? 'scale-95 translate-y-[1px]' : ''} active:scale-95 touch-none`}
+              ></button>
+            </div>
+
           </div>
 
           {children}
