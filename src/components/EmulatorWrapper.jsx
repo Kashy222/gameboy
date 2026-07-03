@@ -79,7 +79,7 @@ const EmulatorWrapper = () => {
     
     const keyMap = {
       up: 'ArrowUp', down: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight',
-      a: 'x', b: 'z', x: 's', y: 'a', start: 'Enter', select: 'Shift'
+      a: 'z', b: 'x', x: 's', y: 'a', start: 'Enter', select: 'Shift'
     };
     
     const keyCodeMap = {
