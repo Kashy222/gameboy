@@ -47,11 +47,15 @@ const ConsoleBody = ({ children }) => {
           {/* System Buttons */}
           <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex space-x-6 items-end">
             
-            {/* Select Button */}
             <div className="flex flex-col items-center space-y-2">
               <span className={`text-[9px] font-sans font-bold tracking-[0.2em] uppercase ${isWhite ? 'text-[#a0a0a0]' : 'text-[#444]'}`}>Select</span>
               <button 
-                onPointerDown={(e) => { e.preventDefault(); e.target.setPointerCapture(e.pointerId); updateInput('select', true); }}
+                onPointerDown={(e) => { 
+                  e.preventDefault(); 
+                  e.target.setPointerCapture(e.pointerId); 
+                  if (navigator.vibrate) navigator.vibrate(5);
+                  updateInput('select', true); 
+                }}
                 onPointerUp={(e) => { e.preventDefault(); e.target.releasePointerCapture(e.pointerId); updateInput('select', false); }}
                 onPointerCancel={(e) => { e.preventDefault(); updateInput('select', false); }}
                 onPointerLeave={(e) => { e.preventDefault(); updateInput('select', false); }}
@@ -60,10 +64,15 @@ const ConsoleBody = ({ children }) => {
             </div>
             
             {/* Start Button */}
-            <div className="flex flex-col items-center space-y-2">
+            <div className="flex flex-col items-center">
               <span className={`text-[9px] font-sans font-bold tracking-[0.2em] uppercase ${isWhite ? 'text-[#a0a0a0]' : 'text-[#444]'}`}>Start</span>
               <button 
-                onPointerDown={(e) => { e.preventDefault(); e.target.setPointerCapture(e.pointerId); updateInput('start', true); }}
+                onPointerDown={(e) => { 
+                  e.preventDefault(); 
+                  e.target.setPointerCapture(e.pointerId); 
+                  if (navigator.vibrate) navigator.vibrate(5);
+                  updateInput('start', true); 
+                }}
                 onPointerUp={(e) => { e.preventDefault(); e.target.releasePointerCapture(e.pointerId); updateInput('start', false); }}
                 onPointerCancel={(e) => { e.preventDefault(); updateInput('start', false); }}
                 onPointerLeave={(e) => { e.preventDefault(); updateInput('start', false); }}

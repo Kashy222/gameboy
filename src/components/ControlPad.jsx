@@ -166,14 +166,19 @@ const ActionButton = ({ active, onDown, onUp, deviceColor, label }) => {
 
   return (
     <button
-      onPointerDown={(e) => { e.preventDefault(); e.target.setPointerCapture(e.pointerId); onDown(); }}
+      onPointerDown={(e) => { 
+        e.preventDefault(); 
+        e.target.setPointerCapture(e.pointerId); 
+        if (navigator.vibrate) navigator.vibrate(5);
+        onDown(); 
+      }}
       onPointerUp={(e) => { e.preventDefault(); e.target.releasePointerCapture(e.pointerId); onUp(); }}
       onPointerCancel={(e) => { e.preventDefault(); onUp(); }}
       onPointerLeave={(e) => { e.preventDefault(); onUp(); }}
-      className={`w-[1.8rem] h-[1.8rem] rounded-full flex items-center justify-center select-none touch-none border border-transparent transition-all duration-75 ease-out ${active ? 'scale-[0.92] translate-y-[2px] translate-x-[1px]' : ''} ${btnBg} ${shadow}`}
+      className={`w-[2.15rem] h-[2.15rem] rounded-full flex items-center justify-center select-none touch-none border border-transparent transition-all duration-75 ease-out ${active ? 'scale-[0.92] translate-y-[2px] translate-x-[1px]' : ''} ${btnBg} ${shadow}`}
     >
       {label && (
-        <span className={`font-sans font-bold text-[10px] pointer-events-none select-none ${textEmboss}`} style={{ textShadow: isWhite ? '0 -1px 1px rgba(0,0,0,0.1)' : '0 -1px 1px rgba(0,0,0,0.5)' }}>
+        <span className={`font-sans font-bold text-[12px] pointer-events-none select-none ${textEmboss}`} style={{ textShadow: isWhite ? '0 -1px 1px rgba(0,0,0,0.1)' : '0 -1px 1px rgba(0,0,0,0.5)' }}>
           {label}
         </span>
       )}
@@ -210,10 +215,10 @@ const ControlPad = () => {
           style={{ transform: 'scale(calc(min(1.45, (min(100vw, 400px) - 84px) / 224)))' }}
         >
           {/* Circular wells */}
-          <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-9 h-9 rounded-full ${wellShadow}`}></div>
-          <div className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-9 h-9 rounded-full ${wellShadow}`}></div>
-          <div className={`absolute top-1/2 left-0 -translate-y-1/2 w-9 h-9 rounded-full ${wellShadow}`}></div>
-          <div className={`absolute top-1/2 right-0 -translate-y-1/2 w-9 h-9 rounded-full ${wellShadow}`}></div>
+          <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-11 h-11 rounded-full ${wellShadow}`}></div>
+          <div className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-11 h-11 rounded-full ${wellShadow}`}></div>
+          <div className={`absolute top-1/2 left-0 -translate-y-1/2 w-11 h-11 rounded-full ${wellShadow}`}></div>
+          <div className={`absolute top-1/2 right-0 -translate-y-1/2 w-11 h-11 rounded-full ${wellShadow}`}></div>
 
           <div className="absolute top-[2px] left-1/2 -translate-x-1/2">
             <ActionButton label="X" active={inputState.x} deviceColor={deviceColor} onDown={() => updateInput('x', true)} onUp={() => updateInput('x', false)} />
