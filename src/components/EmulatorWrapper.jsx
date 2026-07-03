@@ -157,20 +157,11 @@ const EmulatorWrapper = () => {
   if (isPlaying) {
     const handleScreenTap = () => {
       // Dispatch a quick Start button press to skip promos/intros when tapping the screen
-      const eventDown = new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', bubbles: true, cancelable: true });
-      const eventUp = new KeyboardEvent('keyup', { key: 'Enter', code: 'Enter', bubbles: true, cancelable: true });
-      Object.defineProperty(eventDown, 'keyCode', { get: () => 13 });
-      Object.defineProperty(eventDown, 'which', { get: () => 13 });
-      Object.defineProperty(eventUp, 'keyCode', { get: () => 13 });
-      Object.defineProperty(eventUp, 'which', { get: () => 13 });
-      
-      const canvas = document.querySelector('#game-container canvas');
-      const target = canvas || document;
-      target.dispatchEvent(eventDown);
-      setTimeout(() => target.dispatchEvent(eventUp), 50);
+      dispatchKey('keydown', 'Enter');
+      setTimeout(() => dispatchKey('keyup', 'Enter'), 50);
     };
 
-    return <div id="game-container" onPointerDownCapture={handleScreenTap} className="w-full h-full bg-black relative overflow-hidden"></div>;
+    return <div id="game-container" onPointerDownCapture={handleScreenTap} className="w-full h-full bg-black relative overflow-hidden pointer-events-auto"></div>;
   }
 
   return (
