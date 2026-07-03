@@ -204,14 +204,14 @@ const ControlPad = () => {
   if (isGrey) wellShadow = 'shadow-[inset_2px_3px_5px_rgba(0,0,0,0.5),0_1px_1px_rgba(255,255,255,0.3)]';
 
   return (
-    <div className="w-full flex-1 flex flex-col justify-between pt-10 pb-6 relative z-10 px-6">
+    <div className="w-full flex-1 flex flex-col justify-between pt-10 pb-6 relative z-10 px-6 pointer-events-none">
       
       {/* Top section: Analog Stick & 4 Action Buttons */}
       <div className="flex justify-between items-start mt-4 px-2 relative w-full">
         
         {/* Analog Joystick */}
         <div 
-          className="relative origin-left"
+          className="relative origin-left pointer-events-auto"
           style={{ transform: 'scale(calc(min(1.45, (min(100vw, 400px) - 84px) / 224)))' }}
         >
           <AnalogStick deviceColor={deviceColor} />
@@ -219,7 +219,7 @@ const ControlPad = () => {
 
         {/* 4 Action Buttons (Diamond Layout) */}
         <div 
-          className="relative w-32 h-32 origin-right"
+          className="relative w-32 h-32 origin-right pointer-events-auto"
           style={{ transform: 'scale(calc(min(1.45, (min(100vw, 400px) - 84px) / 224)))' }}
         >
           {/* Circular wells with buttons centered inside */}
