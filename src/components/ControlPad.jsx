@@ -112,44 +112,7 @@ const ControlPad = () => {
       <div className="flex justify-between items-start mt-4 px-2">
         
         {/* D-Pad */}
-        <div className="relative w-28 h-28 transform scale-[1.15] sm:scale-110 origin-left ml-2">
-          {/* Cross shaped well indentation */}
-          <div className="absolute inset-0">
-             <div className={`absolute top-0 left-9 w-[2.5rem] h-28 rounded-sm ${wellShadow}`}></div>
-             <div className={`absolute left-0 top-9 h-[2.5rem] w-28 rounded-sm ${wellShadow}`}></div>
-             <div className={`absolute left-9 top-9 w-[2.5rem] h-[2.5rem] ${crossWellBg}`}></div>
-          </div>
-
-          {/* Unified Tilting D-Pad Wrapper */}
-          <div 
-            className="absolute top-0 left-0 w-full h-full transition-transform duration-75 ease-out z-20"
-            style={{ 
-              transform: `
-                ${inputState.up ? 'rotateX(10deg) translateY(-1px) scale(0.96)' : ''}
-                ${inputState.down ? 'rotateX(-10deg) translateY(2px) scale(0.96)' : ''}
-                ${inputState.left ? 'rotateY(-10deg) translateX(-2px) scale(0.96)' : ''}
-                ${inputState.right ? 'rotateY(10deg) translateX(2px) scale(0.96)' : ''}
-                ${!inputState.up && !inputState.down && !inputState.left && !inputState.right ? 'rotateX(0deg) rotateY(0deg) scale(1)' : ''}
-              `,
-              transformOrigin: 'center center'
-            }}
-          >
-            <DPadButton
-              deviceColor={deviceColor} active={inputState.up}
-              onDown={() => updateInput('up', true)} onUp={() => updateInput('up', false)}
-              className="top-[2px] left-[38px] w-[2.2rem] h-[2.3rem] rounded-t-sm"
-            />
-            <DPadButton
-              deviceColor={deviceColor} active={inputState.down}
-              onDown={() => updateInput('down', true)} onUp={() => updateInput('down', false)}
-              className="bottom-[2px] left-[38px] w-[2.2rem] h-[2.3rem] rounded-b-sm"
-            />
-            <DPadButton
-              deviceColor={deviceColor} active={inputState.left}
-              onDown={() => updateInput('left', true)} onUp={() => updateInput('left', false)}
-              className="left-[2px] top-[38px] w-[2.3rem] h-[2.2rem] rounded-l-sm"
-            />
-        <div className="relative w-28 h-28 transform scale-[1.45] sm:scale-110 origin-left ml-4">
+        <div className="relative w-28 h-28 transform scale-[1.35] sm:scale-110 origin-left ml-2">
           
           {/* Main Cross Background */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[28px] h-full bg-[#1c1c1c] rounded-sm shadow-[inset_-1px_-1px_2px_rgba(0,0,0,0.5),inset_1px_1px_2px_rgba(255,255,255,0.1)]"></div>
@@ -159,22 +122,22 @@ const ControlPad = () => {
           <DPadButton 
             active={inputState?.up} onDown={() => updateInput('up', true)} onUp={() => updateInput('up', false)} 
             className="top-0 left-1/2 -translate-x-1/2 w-[30px] h-[40px] rounded-t-sm" 
-            bgClass={isWhite ? 'bg-[#efefef]' : 'bg-[#222]'} shadow={isWhite ? 'shadow-[0_2px_4px_rgba(0,0,0,0.2)]' : 'shadow-[0_2px_4px_rgba(0,0,0,0.5)]'}
+            deviceColor={deviceColor}
           />
           <DPadButton 
             active={inputState?.down} onDown={() => updateInput('down', true)} onUp={() => updateInput('down', false)} 
             className="bottom-0 left-1/2 -translate-x-1/2 w-[30px] h-[40px] rounded-b-sm" 
-            bgClass={isWhite ? 'bg-[#efefef]' : 'bg-[#222]'} shadow={isWhite ? 'shadow-[0_-2px_4px_rgba(0,0,0,0.2)]' : 'shadow-[0_-2px_4px_rgba(0,0,0,0.5)]'}
+            deviceColor={deviceColor}
           />
           <DPadButton 
             active={inputState?.left} onDown={() => updateInput('left', true)} onUp={() => updateInput('left', false)} 
             className="left-0 top-1/2 -translate-y-1/2 w-[40px] h-[30px] rounded-l-sm" 
-            bgClass={isWhite ? 'bg-[#efefef]' : 'bg-[#222]'} shadow={isWhite ? 'shadow-[2px_0_4px_rgba(0,0,0,0.2)]' : 'shadow-[2px_0_4px_rgba(0,0,0,0.5)]'}
+            deviceColor={deviceColor}
           />
           <DPadButton 
             active={inputState?.right} onDown={() => updateInput('right', true)} onUp={() => updateInput('right', false)} 
             className="right-0 top-1/2 -translate-y-1/2 w-[40px] h-[30px] rounded-r-sm" 
-            bgClass={isWhite ? 'bg-[#efefef]' : 'bg-[#222]'} shadow={isWhite ? 'shadow-[-2px_0_4px_rgba(0,0,0,0.2)]' : 'shadow-[-2px_0_4px_rgba(0,0,0,0.5)]'}
+            deviceColor={deviceColor}
           />
           
           {/* Center Pivot */}
@@ -184,7 +147,7 @@ const ControlPad = () => {
         </div>
 
         {/* 4 Action Buttons (Diamond Layout) */}
-        <div className="relative w-28 h-28 transform scale-[1.45] sm:scale-110 origin-right mr-4">
+        <div className="relative w-28 h-28 transform scale-[1.35] sm:scale-110 origin-right mr-2">
           {/* Circular wells */}
           <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-9 h-9 rounded-full ${wellShadow}`}></div>
           <div className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-9 h-9 rounded-full ${wellShadow}`}></div>

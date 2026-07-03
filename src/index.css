@@ -30,3 +30,18 @@ html, body, #root {
   overscroll-behavior: none;
   font-family: ui-sans-serif, system-ui, sans-serif;
 }
+
+/* NUCLEAR OPTION: Destroy ANY floating overlay div EmulatorJS injects directly onto the body */
+body > div:not(#root) {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  z-index: -9999 !important;
+}
+
+/* Also destroy any internal UI components it injects */
+.ejs-ui, .ejs-touch-controls, .ejs-virtual-gamepad, 
+div[style*="touch-action: none"][style*="z-index"],
+div[id^="gamepad"], div[class*="gamepad"] {
+  display: none !important;
+}
