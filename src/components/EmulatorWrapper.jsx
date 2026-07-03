@@ -170,7 +170,7 @@ const EmulatorWrapper = () => {
       setTimeout(() => target.dispatchEvent(eventUp), 50);
     };
 
-    return <div id="game-container" onPointerDown={handleScreenTap} className="w-full h-full bg-black relative overflow-hidden"></div>;
+    return <div id="game-container" onPointerDownCapture={handleScreenTap} className="w-full h-full bg-black relative overflow-hidden"></div>;
   }
 
   return (

@@ -67,8 +67,10 @@ const ConsoleBody = ({ children }) => {
           {/* Subtle lighting gradient to simulate flat matte surface */}
           <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-white/5 to-transparent mix-blend-overlay"></div>
 
+          {children}
+
           {/* System Buttons */}
-          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex space-x-6 items-end">
+          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex space-x-6 items-end z-20 pointer-events-auto">
             
             <div className="flex flex-col items-center space-y-2">
               <span className={`text-[9px] font-sans font-bold tracking-[0.2em] uppercase ${isWhite ? 'text-[#a0a0a0]' : 'text-[#444]'}`}>Select</span>
@@ -112,8 +114,6 @@ const ConsoleBody = ({ children }) => {
             </div>
 
           </div>
-
-          {children}
 
         </div>
 
