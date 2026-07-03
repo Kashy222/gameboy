@@ -43,13 +43,14 @@ const EmulatorWrapper = () => {
       fullscreen: false, saveState: false, loadState: false, reset: false, controls: false
     };
 
-    // Inject CSS to safely hide only the EmulatorJS virtual touch gamepad
+    // Inject CSS to safely hide only the EmulatorJS virtual touch gamepad and Menu
     const style = document.createElement('style');
     style.id = 'ejs-hide-gamepad';
     style.innerHTML = `
       .ejs-ui, .ejs-touch-controls, .ejs-virtual-gamepad, 
       div[style*="touch-action: none"][style*="z-index"],
-      div[id^="gamepad"], div[class*="gamepad"] {
+      div[id^="gamepad"], div[class*="gamepad"],
+      div[title="Menu"], .ejs-menu, div[style*="z-index: 1000000"] {
         display: none !important;
         opacity: 0 !important;
         pointer-events: none !important;
@@ -93,11 +94,9 @@ const EmulatorWrapper = () => {
         cancelable: true
       });
       
-      // Emscripten requires keyCode/which to be present
       Object.defineProperty(event, 'keyCode', { get: () => keyCodeMap[key] });
       Object.defineProperty(event, 'which', { get: () => keyCodeMap[key] });
 
-      // Dispatch to the canvas if it exists, otherwise document
       const canvas = document.querySelector('#game-container canvas');
       if (canvas) {
         canvas.dispatchEvent(event);
@@ -107,6 +106,24 @@ const EmulatorWrapper = () => {
     };
 
     Object.keys(inputState).forEach(key => {
+      // NOS Macro for 'X' button in Road Rash
+      if (key === 'x') {
+        if (inputState.x && !prevInput.current.x) {
+          const accelKey = keyMap['a']; // The key for accelerating
+          dispatchKey('keyup', accelKey);
+          setTimeout(() => dispatchKey('keydown', accelKey), 40);
+          setTimeout(() => dispatchKey('keyup', accelKey), 80);
+          setTimeout(() => dispatchKey('keydown', accelKey), 120);
+          
+          // Restore the proper state depending on if the user is still physically holding A
+          setTimeout(() => {
+            if (inputState.a) dispatchKey('keydown', accelKey);
+            else dispatchKey('keyup', accelKey);
+          }, 180);
+        }
+        return; // Skip normal dispatch for X
+      }
+
       if (inputState[key] && !prevInput.current[key]) {
         dispatchKey('keydown', keyMap[key]);
       } else if (!inputState[key] && prevInput.current[key]) {

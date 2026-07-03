@@ -1,5 +1,101 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { useGamepad } from '../context/GamepadContext';
+
+const AnalogStick = ({ deviceColor }) => {
+  const { updateInput } = useGamepad();
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const stickRef = useRef(null);
+  const activePointers = useRef(new Set());
+
+  const isWhite = deviceColor === 'white';
+  const isGrey = deviceColor === 'grey';
+
+  const handlePointerDown = (e) => {
+    e.preventDefault();
+    e.target.setPointerCapture(e.pointerId);
+    activePointers.current.add(e.pointerId);
+    handleMove(e);
+  };
+
+  const handlePointerMove = (e) => {
+    if (!activePointers.current.has(e.pointerId)) return;
+    handleMove(e);
+  };
+
+  const handleMove = (e) => {
+    if (!stickRef.current) return;
+    const rect = stickRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    
+    // Max distance the knob can travel
+    const maxRadius = rect.width / 2 - 24; 
+    
+    let dx = e.clientX - centerX;
+    let dy = e.clientY - centerY;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    
+    if (distance > maxRadius) {
+      dx = (dx / distance) * maxRadius;
+      dy = (dy / distance) * maxRadius;
+    }
+    
+    setPosition({ x: dx, y: dy });
+
+    // Threshold for triggering digital input
+    const threshold = maxRadius * 0.35;
+    updateInput('up', dy < -threshold);
+    updateInput('down', dy > threshold);
+    updateInput('left', dx < -threshold);
+    updateInput('right', dx > threshold);
+  };
+
+  const handlePointerUp = (e) => {
+    e.preventDefault();
+    e.target.releasePointerCapture(e.pointerId);
+    activePointers.current.delete(e.pointerId);
+    if (activePointers.current.size === 0) {
+      setPosition({ x: 0, y: 0 });
+      updateInput('up', false);
+      updateInput('down', false);
+      updateInput('left', false);
+      updateInput('right', false);
+    }
+  };
+
+  let wellClass = 'bg-[#1a1a1a] shadow-[inset_2px_4px_8px_rgba(0,0,0,0.9),0_1px_1px_rgba(255,255,255,0.05)]';
+  if (isWhite) wellClass = 'bg-[#dfdfdf] shadow-[inset_2px_4px_6px_rgba(0,0,0,0.2),0_1px_1px_rgba(255,255,255,0.8)]';
+  if (isGrey) wellClass = 'bg-[#404448] shadow-[inset_2px_4px_8px_rgba(0,0,0,0.6),0_1px_1px_rgba(255,255,255,0.2)]';
+  
+  let knobClass = 'bg-[#333] shadow-[3px_5px_8px_rgba(0,0,0,0.7),inset_-2px_-4px_6px_rgba(0,0,0,0.5),inset_2px_2px_4px_rgba(255,255,255,0.1)]';
+  if (isWhite) knobClass = 'bg-[#f4f4f4] shadow-[1px_3px_5px_rgba(0,0,0,0.2),inset_-1px_-2px_4px_rgba(0,0,0,0.05),inset_1px_2px_4px_rgba(255,255,255,1)]';
+  if (isGrey) knobClass = 'bg-[#60656a] shadow-[2px_4px_7px_rgba(0,0,0,0.5),inset_-2px_-3px_5px_rgba(0,0,0,0.3),inset_2px_2px_4px_rgba(255,255,255,0.2)]';
+
+  let knobTopClass = 'bg-[#262626] border border-[#1a1a1a] shadow-[inset_1px_2px_4px_rgba(0,0,0,0.8)]';
+  if (isWhite) knobTopClass = 'bg-[#e5e5e5] border border-[#d0d0d0] shadow-[inset_1px_2px_4px_rgba(0,0,0,0.1)]';
+  if (isGrey) knobTopClass = 'bg-[#50555a] border border-[#404448] shadow-[inset_1px_2px_4px_rgba(0,0,0,0.4)]';
+
+  return (
+    <div 
+      ref={stickRef}
+      className={`relative w-28 h-28 rounded-full ${wellClass} flex items-center justify-center touch-none`}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
+      onPointerLeave={handlePointerUp}
+    >
+      {/* The Knob */}
+      <div 
+        className={`w-[68px] h-[68px] rounded-full ${knobClass} pointer-events-none`}
+        style={{ transform: `translate(${position.x}px, ${position.y}px)` }}
+      >
+         {/* Inner detail to make it look like a thumbstick (recessed top) */}
+         <div className={`absolute inset-[8px] rounded-full ${knobTopClass}`}></div>
+      </div>
+    </div>
+  );
+};
 
 const ActionButton = ({ active, onDown, onUp, deviceColor, label }) => {
   const isWhite = deviceColor === 'white';
@@ -46,107 +142,27 @@ const ActionButton = ({ active, onDown, onUp, deviceColor, label }) => {
   );
 };
 
-const DPadButton = ({ active, onDown, onUp, className, deviceColor }) => {
-  const isWhite = deviceColor === 'white';
-  const isGrey = deviceColor === 'grey';
-
-  let shadow = active 
-    ? 'shadow-[inset_2px_2px_4px_rgba(0,0,0,0.9)]' 
-    : 'shadow-[3px_4px_6px_rgba(0,0,0,0.7),inset_1px_1px_1px_rgba(255,255,255,0.1),inset_-1px_-1px_1px_rgba(0,0,0,0.5)]';
-    
-  if (isWhite) {
-    shadow = active 
-      ? 'shadow-[inset_1px_1px_3px_rgba(0,0,0,0.2)]' 
-      : 'shadow-[2px_3px_5px_rgba(0,0,0,0.2),inset_1px_1px_1px_rgba(255,255,255,1),inset_-1px_-1px_1px_rgba(0,0,0,0.05)]';
-  } else if (isGrey) {
-    shadow = active 
-      ? 'shadow-[inset_2px_2px_4px_rgba(0,0,0,0.6)]' 
-      : 'shadow-[3px_4px_5px_rgba(0,0,0,0.4),inset_1px_1px_1px_rgba(255,255,255,0.3),inset_-1px_-1px_1px_rgba(0,0,0,0.3)]';
-  }
-
-  let bgClass = 'bg-[#1a1a1a]';
-  if (isWhite) bgClass = 'bg-[#efefef]';
-  if (isGrey) bgClass = 'bg-[#51565b]';
-
-  return (
-    <button
-      onPointerDown={(e) => { e.preventDefault(); e.target.setPointerCapture(e.pointerId); onDown(); }}
-      onPointerUp={(e) => { e.preventDefault(); e.target.releasePointerCapture(e.pointerId); onUp(); }}
-      onPointerCancel={(e) => { e.preventDefault(); onUp(); }}
-      onPointerLeave={(e) => { e.preventDefault(); onUp(); }}
-      className={`absolute transition-all duration-75 ease-out select-none touch-none ${active ? 'scale-[0.92] translate-y-[2px] translate-x-[1px]' : ''} ${className} ${bgClass} ${shadow} z-10`}
-    >
-    </button>
-  );
-};
-
 const ControlPad = () => {
   const { inputState, updateInput, deviceColor } = useGamepad();
   const isWhite = deviceColor === 'white';
   const isGrey = deviceColor === 'grey';
 
-  let dpadBg = 'bg-[#1a1a1a]';
-  if (isWhite) dpadBg = 'bg-[#efefef]';
-  if (isGrey) dpadBg = 'bg-[#51565b]';
-
   let wellShadow = 'shadow-[inset_2px_3px_5px_rgba(0,0,0,0.9),0_1px_1px_rgba(255,255,255,0.05)]';
   if (isWhite) wellShadow = 'shadow-[inset_1px_2px_4px_rgba(0,0,0,0.15),0_1px_1px_rgba(255,255,255,0.8)]';
   if (isGrey) wellShadow = 'shadow-[inset_2px_3px_5px_rgba(0,0,0,0.5),0_1px_1px_rgba(255,255,255,0.3)]';
 
-  let systemWell = 'shadow-[inset_1px_2px_3px_rgba(0,0,0,0.8),0_1px_0_rgba(255,255,255,0.05)]';
-  if (isWhite) systemWell = 'shadow-[inset_1px_2px_3px_rgba(0,0,0,0.2),0_1px_0_rgba(255,255,255,1)]';
-  if (isGrey) systemWell = 'shadow-[inset_1px_2px_3px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.2)]';
-  
-  let systemBg = 'bg-[#151515]';
-  if (isWhite) systemBg = 'bg-[#dfdfdf]';
-  if (isGrey) systemBg = 'bg-[#404448]';
-
-  let crossWellBg = 'bg-[#1e1e1e]';
-  if (isWhite) crossWellBg = 'bg-[#efefef]';
-  if (isGrey) crossWellBg = 'bg-[#555a5e]';
-
   return (
     <div className="w-full flex-1 flex flex-col justify-between pt-10 pb-6 relative z-10 px-6">
       
-      {/* Top section: D-Pad & 4 Action Buttons */}
+      {/* Top section: Analog Stick & 4 Action Buttons */}
       <div className="flex justify-between items-start mt-4 px-2 relative w-full">
         
-        {/* D-Pad */}
+        {/* Analog Joystick */}
         <div 
-          className="relative w-28 h-28 origin-left"
+          className="relative origin-left"
           style={{ transform: 'scale(calc(min(1.45, (min(100vw, 400px) - 84px) / 224)))' }}
         >
-          
-          {/* Main Cross Background */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[28px] h-full bg-[#1c1c1c] rounded-sm shadow-[inset_-1px_-1px_2px_rgba(0,0,0,0.5),inset_1px_1px_2px_rgba(255,255,255,0.1)]"></div>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[28px] bg-[#1c1c1c] rounded-sm shadow-[inset_-1px_-1px_2px_rgba(0,0,0,0.5),inset_1px_1px_2px_rgba(255,255,255,0.1)]"></div>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[26px] h-[26px] bg-[#1c1c1c] z-0"></div>
-
-          <DPadButton 
-            active={inputState?.up} onDown={() => updateInput('up', true)} onUp={() => updateInput('up', false)} 
-            className="top-0 left-1/2 -translate-x-1/2 w-[30px] h-[40px] rounded-t-sm" 
-            deviceColor={deviceColor}
-          />
-          <DPadButton 
-            active={inputState?.down} onDown={() => updateInput('down', true)} onUp={() => updateInput('down', false)} 
-            className="bottom-0 left-1/2 -translate-x-1/2 w-[30px] h-[40px] rounded-b-sm" 
-            deviceColor={deviceColor}
-          />
-          <DPadButton 
-            active={inputState?.left} onDown={() => updateInput('left', true)} onUp={() => updateInput('left', false)} 
-            className="left-0 top-1/2 -translate-y-1/2 w-[40px] h-[30px] rounded-l-sm" 
-            deviceColor={deviceColor}
-          />
-          <DPadButton 
-            active={inputState?.right} onDown={() => updateInput('right', true)} onUp={() => updateInput('right', false)} 
-            className="right-0 top-1/2 -translate-y-1/2 w-[40px] h-[30px] rounded-r-sm" 
-            deviceColor={deviceColor}
-          />
-          
-          {/* Center Pivot */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[28px] h-[28px] pointer-events-none z-20">
-            <div className={`absolute inset-0 rounded-full m-1 ${isWhite ? 'bg-[#e5e5e5]' : 'bg-[#181818]'} shadow-[inset_1px_1px_2px_rgba(0,0,0,0.5)] opacity-50`}></div>
-          </div>
+          <AnalogStick deviceColor={deviceColor} />
         </div>
 
         {/* 4 Action Buttons (Diamond Layout) */}
