@@ -17,12 +17,16 @@
   }
 }
 
-body {
+html, body, #root {
+  width: 100%;
+  height: 100%;
   margin: 0;
   padding: 0;
+  overflow: hidden;
+  touch-action: none; /* Crucial for preventing bubble zoom and scrolling on iOS */
+  user-select: none;
+  -webkit-user-select: none;
   background-color: #0f172a; /* Slate 900 for desktop backdrop */
-  overflow: hidden; /* Prevent scrolling, snug fit */
   overscroll-behavior: none;
   font-family: ui-sans-serif, system-ui, sans-serif;
-  touch-action: none; /* Crucial for custom touch handling */
 }

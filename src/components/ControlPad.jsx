@@ -149,19 +149,42 @@ const ControlPad = () => {
               onDown={() => updateInput('left', true)} onUp={() => updateInput('left', false)}
               className="left-[2px] top-[38px] w-[2.3rem] h-[2.2rem] rounded-l-sm"
             />
-            <DPadButton
-              deviceColor={deviceColor} active={inputState.right}
-              onDown={() => updateInput('right', true)} onUp={() => updateInput('right', false)}
-              className="right-[2px] top-[38px] w-[2.3rem] h-[2.2rem] rounded-r-sm"
-            />
+        <div className="relative w-28 h-28 transform scale-[1.45] sm:scale-110 origin-left ml-4">
+          
+          {/* Main Cross Background */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[28px] h-full bg-[#1c1c1c] rounded-sm shadow-[inset_-1px_-1px_2px_rgba(0,0,0,0.5),inset_1px_1px_2px_rgba(255,255,255,0.1)]"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[28px] bg-[#1c1c1c] rounded-sm shadow-[inset_-1px_-1px_2px_rgba(0,0,0,0.5),inset_1px_1px_2px_rgba(255,255,255,0.1)]"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[26px] h-[26px] bg-[#1c1c1c] z-0"></div>
 
-            {/* Center piece of D-pad */}
-            <div className={`absolute top-[38px] left-[38px] w-[2.25rem] h-[2.25rem] pointer-events-none ${dpadBg}`}></div>
+          <DPadButton 
+            active={inputState?.up} onDown={() => updateInput('up', true)} onUp={() => updateInput('up', false)} 
+            className="top-0 left-1/2 -translate-x-1/2 w-[30px] h-[40px] rounded-t-sm" 
+            bgClass={isWhite ? 'bg-[#efefef]' : 'bg-[#222]'} shadow={isWhite ? 'shadow-[0_2px_4px_rgba(0,0,0,0.2)]' : 'shadow-[0_2px_4px_rgba(0,0,0,0.5)]'}
+          />
+          <DPadButton 
+            active={inputState?.down} onDown={() => updateInput('down', true)} onUp={() => updateInput('down', false)} 
+            className="bottom-0 left-1/2 -translate-x-1/2 w-[30px] h-[40px] rounded-b-sm" 
+            bgClass={isWhite ? 'bg-[#efefef]' : 'bg-[#222]'} shadow={isWhite ? 'shadow-[0_-2px_4px_rgba(0,0,0,0.2)]' : 'shadow-[0_-2px_4px_rgba(0,0,0,0.5)]'}
+          />
+          <DPadButton 
+            active={inputState?.left} onDown={() => updateInput('left', true)} onUp={() => updateInput('left', false)} 
+            className="left-0 top-1/2 -translate-y-1/2 w-[40px] h-[30px] rounded-l-sm" 
+            bgClass={isWhite ? 'bg-[#efefef]' : 'bg-[#222]'} shadow={isWhite ? 'shadow-[2px_0_4px_rgba(0,0,0,0.2)]' : 'shadow-[2px_0_4px_rgba(0,0,0,0.5)]'}
+          />
+          <DPadButton 
+            active={inputState?.right} onDown={() => updateInput('right', true)} onUp={() => updateInput('right', false)} 
+            className="right-0 top-1/2 -translate-y-1/2 w-[40px] h-[30px] rounded-r-sm" 
+            bgClass={isWhite ? 'bg-[#efefef]' : 'bg-[#222]'} shadow={isWhite ? 'shadow-[-2px_0_4px_rgba(0,0,0,0.2)]' : 'shadow-[-2px_0_4px_rgba(0,0,0,0.5)]'}
+          />
+          
+          {/* Center Pivot */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[28px] h-[28px] pointer-events-none z-20">
+            <div className={`absolute inset-0 rounded-full m-1 ${isWhite ? 'bg-[#e5e5e5]' : 'bg-[#181818]'} shadow-[inset_1px_1px_2px_rgba(0,0,0,0.5)] opacity-50`}></div>
           </div>
         </div>
 
         {/* 4 Action Buttons (Diamond Layout) */}
-        <div className="relative w-28 h-28 transform scale-[1.25] sm:scale-110 origin-right mr-2">
+        <div className="relative w-28 h-28 transform scale-[1.45] sm:scale-110 origin-right mr-4">
           {/* Circular wells */}
           <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-9 h-9 rounded-full ${wellShadow}`}></div>
           <div className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-9 h-9 rounded-full ${wellShadow}`}></div>

@@ -45,10 +45,7 @@ const EmulatorWrapper = () => {
     const style = document.createElement('style');
     style.id = 'ejs-hide-gamepad';
     style.innerHTML = `
-      #game-container svg, 
-      #game-container .ejs-touch-controls,
-      #game-container .ejs-virtual-gamepad,
-      #game-container div[style*="border-radius: 50%"] {
+      #game-container *:not(canvas) {
         display: none !important;
         opacity: 0 !important;
         pointer-events: none !important;
