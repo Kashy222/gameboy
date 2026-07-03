@@ -11,7 +11,64 @@ const keyCodeMap = {
   'x': 88, 'z': 90, 's': 83, 'a': 65, 'Enter': 13, 'Shift': 16
 };
 
+// Map our buttons to the Standard Gamepad layout that EmulatorJS expects
+const gamepadMap = {
+  up: 12, down: 13, left: 14, right: 15,
+  a: 2,     // West -> Genesis A
+  b: 0,     // South -> Genesis B
+  x: 4,     // L1 -> Genesis Y
+  y: 4,     // L1 -> Genesis Y
+  start: 9, // Start
+  select: 8 // Select
+};
+
+let virtualGamepadState = {
+  axes: [0, 0, 0, 0],
+  buttons: Array(17).fill(0).map(() => ({ pressed: false, value: 0 }))
+};
+
+let gamepadSpoofed = false;
+const spoofGamepad = () => {
+  if (gamepadSpoofed || typeof navigator === 'undefined') return;
+  gamepadSpoofed = true;
+  
+  const originalGetGamepads = navigator.getGamepads ? navigator.getGamepads.bind(navigator) : null;
+  navigator.getGamepads = () => {
+    const pads = originalGetGamepads ? originalGetGamepads() : [];
+    
+    // Inject our virtual gamepad as Player 1
+    pads[0] = {
+      id: "Standard Gamepad (Virtual)",
+      index: 0,
+      connected: true,
+      timestamp: Date.now(),
+      mapping: "standard",
+      axes: virtualGamepadState.axes,
+      buttons: virtualGamepadState.buttons
+    };
+    
+    return pads;
+  };
+};
+
+// Ensure spoofing is active
+spoofGamepad();
+
 const dispatchKey = (type, key) => {
+  // 1. Dispatch Gamepad API Event (Guaranteed to work on iOS Chrome/Safari)
+  const isPressed = type === 'keydown';
+  // Reverse lookup the original button name from the keyMap
+  const buttonName = Object.keys(keyMap).find(k => keyMap[k] === key);
+  
+  if (buttonName && gamepadMap[buttonName] !== undefined) {
+    const btnIndex = gamepadMap[buttonName];
+    if (virtualGamepadState.buttons[btnIndex]) {
+      virtualGamepadState.buttons[btnIndex].pressed = isPressed;
+      virtualGamepadState.buttons[btnIndex].value = isPressed ? 1 : 0;
+    }
+  }
+
+  // 2. Dispatch Keyboard Event (Fallback for Desktop)
   const code = keyCodeMap[key];
   const eventConfig = { 
     key: key, 
