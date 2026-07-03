@@ -72,8 +72,14 @@ const EmulatorWrapper = () => {
     };
   }, [isPlaying, romFile, core, webMode]);
 
-  // Map onscreen D-Pad/Buttons to Keyboard Events for EmulatorJS
   const prevInput = useRef(inputState);
+  const currentInput = useRef(inputState);
+  const macroActive = useRef(false);
+
+  useEffect(() => {
+    currentInput.current = inputState;
+  }, [inputState]);
+
   useEffect(() => {
     if (webMode) return; // Disable event mapping for iframe to avoid conflicts
     
@@ -106,24 +112,37 @@ const EmulatorWrapper = () => {
       }
     };
 
-    Object.keys(inputState).forEach(key => {
-      // NOS Macro for 'X' button in Road Rash
-      if (key === 'x') {
-        if (inputState.x && !prevInput.current.x) {
-          const accelKey = keyMap['a']; // The key for accelerating
-          dispatchKey('keyup', accelKey);
-          setTimeout(() => dispatchKey('keydown', accelKey), 40);
-          setTimeout(() => dispatchKey('keyup', accelKey), 80);
-          setTimeout(() => dispatchKey('keydown', accelKey), 120);
-          
-          // Restore the proper state depending on if the user is still physically holding A
-          setTimeout(() => {
-            if (inputState.a) dispatchKey('keydown', accelKey);
-            else dispatchKey('keyup', accelKey);
-          }, 180);
+    const accelKey = keyMap['a'];
+    const wasAccelHeld = prevInput.current.a || prevInput.current.x;
+    const isAccelHeld = inputState.a || inputState.x;
+
+    // 1. Handle X (NOS) macro triggering
+    if (inputState.x && !prevInput.current.x) {
+      macroActive.current = true;
+      dispatchKey('keyup', accelKey);
+      setTimeout(() => dispatchKey('keydown', accelKey), 40);
+      setTimeout(() => dispatchKey('keyup', accelKey), 80);
+      setTimeout(() => {
+        macroActive.current = false;
+        // After macro, restore the state based on whatever is physically pressed NOW
+        if (currentInput.current.a || currentInput.current.x) {
+          dispatchKey('keydown', accelKey);
         }
-        return; // Skip normal dispatch for X
+      }, 120);
+    }
+
+    // 2. Handle normal acceleration state changes (only if macro isn't currently hijacking the key)
+    if (!macroActive.current) {
+      if (isAccelHeld && !wasAccelHeld) {
+        dispatchKey('keydown', accelKey);
+      } else if (!isAccelHeld && wasAccelHeld) {
+        dispatchKey('keyup', accelKey);
       }
+    }
+
+    // 3. Handle all other keys normally
+    Object.keys(inputState).forEach(key => {
+      if (key === 'a' || key === 'x') return; // Handled by the accel state machine above
 
       if (inputState[key] && !prevInput.current[key]) {
         dispatchKey('keydown', keyMap[key]);
@@ -131,6 +150,7 @@ const EmulatorWrapper = () => {
         dispatchKey('keyup', keyMap[key]);
       }
     });
+
     prevInput.current = { ...inputState };
   }, [inputState, webMode]);
 
