@@ -20,18 +20,33 @@ export const GamepadProvider = ({ children }) => {
     joystickR: { x: 0, y: 0 },
   });
 
+  const releaseTimers = useRef({});
+
   const updateInput = useCallback((key, value) => {
-    setInputState(prev => {
-      if (prev[key] === value) return prev;
-      
-      // Trigger a soft haptic vibration when a button is newly pressed
-      if (value && typeof navigator !== 'undefined' && navigator.vibrate) {
-        // Very short vibration for a subtle tactile click feel
-        navigator.vibrate(10); 
+    if (value) {
+      // Clear any pending release if the button is pressed again quickly
+      if (releaseTimers.current[key]) {
+        clearTimeout(releaseTimers.current[key]);
+        releaseTimers.current[key] = null;
       }
       
-      return { ...prev, [key]: value };
-    });
+      setInputState(prev => {
+        if (prev[key] === true) return prev;
+        // Trigger a soft haptic vibration when a button is newly pressed
+        if (typeof navigator !== 'undefined' && navigator.vibrate) {
+          navigator.vibrate(10); 
+        }
+        return { ...prev, [key]: true };
+      });
+    } else {
+      // Delay release by 60ms to ensure fast touch taps on mobile are registered by the emulator
+      releaseTimers.current[key] = setTimeout(() => {
+        setInputState(prev => {
+          if (prev[key] === false) return prev;
+          return { ...prev, [key]: false };
+        });
+      }, 60);
+    }
   }, []);
 
   useEffect(() => {

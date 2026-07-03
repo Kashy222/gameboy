@@ -1,6 +1,43 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useGamepad } from '../context/GamepadContext';
 
+const keyMap = {
+  up: 'ArrowUp', down: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight',
+  a: 'z', b: 'x', x: 's', y: 's', start: 'Enter', select: 'Shift'
+};
+
+const keyCodeMap = {
+  'ArrowUp': 38, 'ArrowDown': 40, 'ArrowLeft': 37, 'ArrowRight': 39,
+  'x': 88, 'z': 90, 's': 83, 'a': 65, 'Enter': 13, 'Shift': 16
+};
+
+const dispatchKey = (type, key) => {
+  const code = keyCodeMap[key];
+  const eventConfig = { 
+    key: key, 
+    code: key, 
+    keyCode: code,
+    which: code,
+    charCode: code,
+    bubbles: true,
+    cancelable: true,
+    composed: true
+  };
+  
+  const event = new KeyboardEvent(type, eventConfig);
+  
+  Object.defineProperty(event, 'keyCode', { get: () => code });
+  Object.defineProperty(event, 'which', { get: () => code });
+  Object.defineProperty(event, 'charCode', { get: () => code });
+
+  const canvas = document.querySelector('#game-container canvas');
+  if (canvas) {
+    try { canvas.dispatchEvent(event); } catch(e) {}
+  }
+  try { document.dispatchEvent(event); } catch(e) {}
+  try { window.dispatchEvent(event); } catch(e) {}
+};
+
 const EmulatorWrapper = () => {
   const [romFile, setRomFile] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -16,7 +53,6 @@ const EmulatorWrapper = () => {
       
       if (ext === 'md' || ext === 'smd' || ext === 'gen') setCore('segaMD');
       else if (ext === 'bin') {
-        // Sega Genesis ROMs are usually 1-4MB. PSX CDs are 300-700MB.
         if (file.size > 10 * 1024 * 1024) setCore('psx'); 
         else setCore('segaMD');
       }
@@ -36,14 +72,13 @@ const EmulatorWrapper = () => {
     window.EJS_gameUrl = URL.createObjectURL(romFile);
     window.EJS_pathtodata = 'https://raw.githack.com/EmulatorJS/EmulatorJS/main/data/';
     window.EJS_startOnLoaded = true;
-    window.EJS_virtualGamepad = 'disabled'; // Tell newer forks to disable it
-    window.EJS_VirtualGamepadSettings = false; // Tell some versions to clear it
+    window.EJS_virtualGamepad = 'disabled';
+    window.EJS_VirtualGamepadSettings = false;
     window.EJS_Buttons = {
       playPause: false, restart: false, mute: false, settings: false, 
       fullscreen: false, saveState: false, loadState: false, reset: false, controls: false
     };
 
-    // Inject CSS to safely hide only the EmulatorJS virtual touch gamepad and Menu
     const style = document.createElement('style');
     style.id = 'ejs-hide-gamepad';
     style.innerHTML = `
@@ -81,42 +116,12 @@ const EmulatorWrapper = () => {
   }, [inputState]);
 
   useEffect(() => {
-    if (webMode) return; // Disable event mapping for iframe to avoid conflicts
+    if (webMode) return;
     
-    const keyMap = {
-      up: 'ArrowUp', down: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight',
-      a: 'z', b: 'x', x: 's', y: 's', start: 'Enter', select: 'Shift'
-    };
-    
-    const keyCodeMap = {
-      'ArrowUp': 38, 'ArrowDown': 40, 'ArrowLeft': 37, 'ArrowRight': 39,
-      'x': 88, 'z': 90, 's': 83, 'a': 65, 'Enter': 13, 'Shift': 16
-    };
-
-    const dispatchKey = (type, key) => {
-      const event = new KeyboardEvent(type, { 
-        key: key, 
-        code: key, 
-        bubbles: true,
-        cancelable: true
-      });
-      
-      Object.defineProperty(event, 'keyCode', { get: () => keyCodeMap[key] });
-      Object.defineProperty(event, 'which', { get: () => keyCodeMap[key] });
-
-      const canvas = document.querySelector('#game-container canvas');
-      if (canvas) {
-        canvas.dispatchEvent(event);
-      } else {
-        document.dispatchEvent(event);
-      }
-    };
-
     const accelKey = keyMap['a'];
     const wasAccelHeld = prevInput.current.a || prevInput.current.x;
     const isAccelHeld = inputState.a || inputState.x;
 
-    // 1. Handle X (NOS) macro triggering
     if (inputState.x && !prevInput.current.x) {
       macroActive.current = true;
       dispatchKey('keyup', accelKey);
@@ -124,14 +129,12 @@ const EmulatorWrapper = () => {
       setTimeout(() => dispatchKey('keyup', accelKey), 80);
       setTimeout(() => {
         macroActive.current = false;
-        // After macro, restore the state based on whatever is physically pressed NOW
         if (currentInput.current.a || currentInput.current.x) {
           dispatchKey('keydown', accelKey);
         }
       }, 120);
     }
 
-    // 2. Handle normal acceleration state changes (only if macro isn't currently hijacking the key)
     if (!macroActive.current) {
       if (isAccelHeld && !wasAccelHeld) {
         dispatchKey('keydown', accelKey);
@@ -140,9 +143,8 @@ const EmulatorWrapper = () => {
       }
     }
 
-    // 3. Handle all other keys normally
     Object.keys(inputState).forEach(key => {
-      if (key === 'a' || key === 'x') return; // Handled by the accel state machine above
+      if (key === 'a' || key === 'x') return;
 
       if (inputState[key] && !prevInput.current[key]) {
         dispatchKey('keydown', keyMap[key]);
@@ -156,12 +158,11 @@ const EmulatorWrapper = () => {
 
   if (isPlaying) {
     const handleScreenTap = () => {
-      // Dispatch a quick Start button press to skip promos/intros when tapping the screen
       dispatchKey('keydown', 'Enter');
       setTimeout(() => dispatchKey('keyup', 'Enter'), 50);
     };
 
-    return <div id="game-container" onPointerDownCapture={handleScreenTap} className="w-full h-full bg-black relative overflow-hidden pointer-events-auto"></div>;
+    return <div id="game-container" onPointerDownCapture={handleScreenTap} onTouchStartCapture={handleScreenTap} className="w-full h-full bg-black relative overflow-hidden pointer-events-auto"></div>;
   }
 
   return (
