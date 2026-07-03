@@ -211,25 +211,20 @@ const ControlPad = () => {
 
         {/* 4 Action Buttons (Diamond Layout) */}
         <div 
-          className="relative w-28 h-28 origin-right"
+          className="relative w-32 h-32 origin-right"
           style={{ transform: 'scale(calc(min(1.45, (min(100vw, 400px) - 84px) / 224)))' }}
         >
-          {/* Circular wells */}
-          <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-11 h-11 rounded-full ${wellShadow}`}></div>
-          <div className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-11 h-11 rounded-full ${wellShadow}`}></div>
-          <div className={`absolute top-1/2 left-0 -translate-y-1/2 w-11 h-11 rounded-full ${wellShadow}`}></div>
-          <div className={`absolute top-1/2 right-0 -translate-y-1/2 w-11 h-11 rounded-full ${wellShadow}`}></div>
-
-          <div className="absolute top-[2px] left-1/2 -translate-x-1/2">
+          {/* Circular wells with buttons centered inside */}
+          <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-11 h-11 rounded-full ${wellShadow} flex items-center justify-center`}>
             <ActionButton label="X" active={inputState.x} deviceColor={deviceColor} onDown={() => updateInput('x', true)} onUp={() => updateInput('x', false)} />
           </div>
-          <div className="absolute bottom-[2px] left-1/2 -translate-x-1/2">
+          <div className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-11 h-11 rounded-full ${wellShadow} flex items-center justify-center`}>
             <ActionButton label="B" active={inputState.b} deviceColor={deviceColor} onDown={() => updateInput('b', true)} onUp={() => updateInput('b', false)} />
           </div>
-          <div className="absolute top-1/2 left-[2px] -translate-y-1/2">
+          <div className={`absolute top-1/2 left-0 -translate-y-1/2 w-11 h-11 rounded-full ${wellShadow} flex items-center justify-center`}>
             <ActionButton label="Y" active={inputState.y} deviceColor={deviceColor} onDown={() => updateInput('y', true)} onUp={() => updateInput('y', false)} />
           </div>
-          <div className="absolute top-1/2 right-[2px] -translate-y-1/2">
+          <div className={`absolute top-1/2 right-0 -translate-y-1/2 w-11 h-11 rounded-full ${wellShadow} flex items-center justify-center`}>
             <ActionButton label="A" active={inputState.a} deviceColor={deviceColor} onDown={() => updateInput('a', true)} onUp={() => updateInput('a', false)} />
           </div>
         </div>
