@@ -214,7 +214,7 @@ const ControlPad = () => {
         
         {/* Analog Joystick */}
         <div 
-          className="relative origin-bottom-left pointer-events-auto"
+          className={`relative ${isLandscape ? 'origin-bottom-left' : 'origin-left'} pointer-events-auto`}
           style={{ transform: isLandscape ? 'scale(1.5)' : 'scale(calc(min(1.45, (min(100vw, 400px) - 84px) / 224)))' }}
         >
           <AnalogStick deviceColor={deviceColor} />
@@ -222,7 +222,7 @@ const ControlPad = () => {
 
         {/* 4 Action Buttons (Diamond Layout) */}
         <div 
-          className="relative w-32 h-32 origin-bottom-right pointer-events-auto"
+          className={`relative w-32 h-32 ${isLandscape ? 'origin-bottom-right' : 'origin-right'} pointer-events-auto`}
           style={{ transform: isLandscape ? 'scale(1.5)' : 'scale(calc(min(1.45, (min(100vw, 400px) - 84px) / 224)))' }}
         >
           {/* Circular wells with buttons centered inside */}
