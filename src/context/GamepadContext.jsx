@@ -108,8 +108,37 @@ export const GamepadProvider = ({ children }) => {
     });
   }, []);
 
+  const [volume, setVolumeState] = useState(1);
+  const [showVolumeOSD, setShowVolumeOSD] = useState(false);
+  
+  const changeVolume = useCallback((delta) => {
+    setVolumeState(prev => {
+      const newVol = Math.max(0, Math.min(1, prev + delta));
+      
+      // Attempt to set emulator volume
+      window.EJS_volume = newVol;
+      if (window.EJS_emulator && typeof window.EJS_emulator.setVolume === 'function') {
+        window.EJS_emulator.setVolume(newVol);
+      } else if (window.EJS_emulator && typeof window.EJS_emulator.changeVolume === 'function') {
+        window.EJS_emulator.changeVolume(newVol);
+      }
+      
+      return newVol;
+    });
+    
+    setShowVolumeOSD(true);
+    
+    // Auto hide after 2 seconds
+    if (window.osdTimeout) clearTimeout(window.osdTimeout);
+    window.osdTimeout = setTimeout(() => {
+      setShowVolumeOSD(false);
+    }, 2000);
+    
+    if (navigator.vibrate) navigator.vibrate(10);
+  }, []);
+
   return (
-    <GamepadContext.Provider value={{ inputState, updateInput, deviceColor, toggleColor }}>
+    <GamepadContext.Provider value={{ inputState, updateInput, deviceColor, toggleColor, volume, changeVolume, showVolumeOSD }}>
       {children}
     </GamepadContext.Provider>
   );

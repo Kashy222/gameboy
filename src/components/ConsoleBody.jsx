@@ -2,7 +2,7 @@ import React from 'react';
 import { useGamepad } from '../context/GamepadContext';
 
 const ConsoleBody = ({ children }) => {
-  const { deviceColor, toggleColor, inputState, updateInput } = useGamepad();
+  const { deviceColor, toggleColor, inputState, updateInput, volume, changeVolume, showVolumeOSD } = useGamepad();
   const isWhite = deviceColor === 'white';
   const isGrey = deviceColor === 'grey';
   
@@ -32,7 +32,18 @@ const ConsoleBody = ({ children }) => {
              className="w-full h-8 bg-[#00a859] rounded-l-sm border-y border-l border-[#007840] shadow-[inset_1px_0_2px_rgba(255,255,255,0.4)]"
              title="Toggle Theme"
            ></button>
-           <div className={`w-full h-12 ${isWhite ? 'bg-[#d0d0d0] border-[#a0a0a0]' : isGrey ? 'bg-[#404448] border-[#222]' : 'bg-[#333] border-[#111]'} rounded-l-sm border-y border-l shadow-[inset_1px_0_2px_rgba(255,255,255,0.2)]`}></div>
+           <div className="flex flex-col space-y-1 w-full">
+             <button 
+               onClick={() => changeVolume(0.1)}
+               className={`w-full h-8 ${isWhite ? 'bg-[#d0d0d0] border-[#a0a0a0]' : isGrey ? 'bg-[#404448] border-[#222]' : 'bg-[#333] border-[#111]'} rounded-l-sm border-y border-l shadow-[inset_1px_0_2px_rgba(255,255,255,0.2)]`}
+               title="Volume Up"
+             ></button>
+             <button 
+               onClick={() => changeVolume(-0.1)}
+               className={`w-full h-8 ${isWhite ? 'bg-[#d0d0d0] border-[#a0a0a0]' : isGrey ? 'bg-[#404448] border-[#222]' : 'bg-[#333] border-[#111]'} rounded-l-sm border-y border-l shadow-[inset_1px_0_2px_rgba(255,255,255,0.2)]`}
+               title="Volume Down"
+             ></button>
+           </div>
         </div>
 
         {/* Main Console Body */}
@@ -40,6 +51,18 @@ const ConsoleBody = ({ children }) => {
           className={`relative w-[94vw] h-[calc(94vw*580/350)] max-w-[calc(94dvh*350/580)] max-h-[94dvh] sm:max-w-none sm:max-h-none sm:w-[350px] sm:h-[580px] sm:rounded-[6px] shadow-[0_20px_50px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col items-center select-none touch-none transition-colors duration-500 z-10 ${shellBg}`}
           style={{ boxShadow: `0 30px 60px -15px rgba(0,0,0,0.4), ${edgeShadow}` }}
         >
+          {/* Volume OSD */}
+          <div 
+            className={`absolute top-8 left-1/2 -translate-x-1/2 z-50 flex items-center space-x-1 bg-black/80 px-4 py-2 rounded-full transition-opacity duration-300 pointer-events-none ${showVolumeOSD ? 'opacity-100' : 'opacity-0'}`}
+          >
+            <span className="text-white text-xs font-bold mr-2 uppercase tracking-wider">Vol</span>
+            {[...Array(10)].map((_, i) => (
+              <div 
+                key={i} 
+                className={`w-1.5 h-3 ${i < Math.round(volume * 10) ? 'bg-white' : 'bg-white/20'}`}
+              ></div>
+            ))}
+          </div>
           
           {/* Subtle lighting gradient to simulate flat matte surface */}
           <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-white/5 to-transparent mix-blend-overlay"></div>
