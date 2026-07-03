@@ -64,7 +64,7 @@ const ConsoleBody = ({ children }) => {
             </div>
             
             {/* Start Button */}
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center space-y-2">
               <span className={`text-[9px] font-sans font-bold tracking-[0.2em] uppercase ${isWhite ? 'text-[#a0a0a0]' : 'text-[#444]'}`}>Start</span>
               <button 
                 onPointerDown={(e) => { 
