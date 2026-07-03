@@ -4,8 +4,10 @@ import { useGamepad } from '../context/GamepadContext';
 const AnalogStick = ({ deviceColor }) => {
   const { updateInput } = useGamepad();
   const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
   const stickRef = useRef(null);
   const activePointers = useRef(new Set());
+  const wasAtEdge = useRef(false);
 
   const isWhite = deviceColor === 'white';
   const isGrey = deviceColor === 'grey';
@@ -14,6 +16,7 @@ const AnalogStick = ({ deviceColor }) => {
     e.preventDefault();
     e.target.setPointerCapture(e.pointerId);
     activePointers.current.add(e.pointerId);
+    setIsDragging(true);
     handleMove(e);
   };
 
@@ -28,26 +31,57 @@ const AnalogStick = ({ deviceColor }) => {
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
     
-    // Max distance the knob can travel
+    // Max visual distance the knob can travel
     const maxRadius = rect.width / 2 - 24; 
     
     let dx = e.clientX - centerX;
     let dy = e.clientY - centerY;
-    const distance = Math.sqrt(dx * dx + dy * dy);
     
-    if (distance > maxRadius) {
-      dx = (dx / distance) * maxRadius;
-      dy = (dy / distance) * maxRadius;
+    // Calculate raw pull distance
+    let pullDistance = Math.sqrt(dx * dx + dy * dy);
+    
+    // Progressive resistance: feels heavier the further you pull
+    const resistanceStart = maxRadius * 0.4;
+    if (pullDistance > resistanceStart) {
+      const excess = pullDistance - resistanceStart;
+      // Compresses the excess movement, making it feel springy and resistant
+      pullDistance = resistanceStart + (excess * 0.4); 
     }
     
-    setPosition({ x: dx, y: dy });
+    if (pullDistance >= maxRadius) {
+      // Haptic "bump" when hitting the physical plastic rim
+      if (!wasAtEdge.current && navigator.vibrate) {
+        navigator.vibrate(15);
+      }
+      wasAtEdge.current = true;
+      pullDistance = maxRadius;
+    } else {
+      if (pullDistance < maxRadius * 0.85) wasAtEdge.current = false;
+    }
+    
+    // Apply restricted distance
+    const angle = Math.atan2(dy, dx);
+    setPosition({ 
+      x: Math.cos(angle) * pullDistance, 
+      y: Math.sin(angle) * pullDistance 
+    });
 
-    // Threshold for triggering digital input
+    // Threshold for triggering digital input (based on raw direction)
     const threshold = maxRadius * 0.35;
-    updateInput('up', dy < -threshold);
-    updateInput('down', dy > threshold);
-    updateInput('left', dx < -threshold);
-    updateInput('right', dx > threshold);
+    const isUp = dy < -threshold;
+    const isDown = dy > threshold;
+    const isLeft = dx < -threshold;
+    const isRight = dx > threshold;
+
+    updateInput('up', isUp);
+    updateInput('down', isDown);
+    updateInput('left', isLeft);
+    updateInput('right', isRight);
+    
+    // Light haptic tick when crossing threshold in any direction
+    if ((isUp || isDown || isLeft || isRight) && pullDistance < resistanceStart && navigator.vibrate) {
+      // (Optional subtle tick can be added here if desired)
+    }
   };
 
   const handlePointerUp = (e) => {
@@ -55,11 +89,13 @@ const AnalogStick = ({ deviceColor }) => {
     e.target.releasePointerCapture(e.pointerId);
     activePointers.current.delete(e.pointerId);
     if (activePointers.current.size === 0) {
+      setIsDragging(false);
       setPosition({ x: 0, y: 0 });
       updateInput('up', false);
       updateInput('down', false);
       updateInput('left', false);
       updateInput('right', false);
+      wasAtEdge.current = false;
     }
   };
 
@@ -87,8 +123,11 @@ const AnalogStick = ({ deviceColor }) => {
     >
       {/* The Knob */}
       <div 
-        className={`w-[68px] h-[68px] rounded-full ${knobClass} pointer-events-none`}
-        style={{ transform: `translate(${position.x}px, ${position.y}px)` }}
+        className={`w-[68px] h-[68px] rounded-full ${knobClass} pointer-events-none ${!isDragging ? 'transition-transform duration-300' : ''}`}
+        style={{ 
+          transform: `translate(${position.x}px, ${position.y}px)`,
+          transitionTimingFunction: !isDragging ? 'cubic-bezier(0.34, 1.56, 0.64, 1)' : 'initial'
+        }}
       >
          {/* Inner detail to make it look like a thumbstick (recessed top) */}
          <div className={`absolute inset-[8px] rounded-full ${knobTopClass}`}></div>
