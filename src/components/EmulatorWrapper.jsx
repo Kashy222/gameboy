@@ -50,8 +50,7 @@ const EmulatorWrapper = () => {
       .ejs-ui, .ejs-touch-controls, .ejs-virtual-gamepad, 
       .ejs-menu, .ejs-menu-container,
       div[title="Menu"], div[title="Settings"], div[title="Controls"],
-      div[id^="gamepad"], div[class*="gamepad"],
-      #game-container > div:not(canvas):not([id]) {
+      div[id^="gamepad"], div[class*="gamepad"] {
         display: none !important;
         opacity: 0 !important;
         pointer-events: none !important;
