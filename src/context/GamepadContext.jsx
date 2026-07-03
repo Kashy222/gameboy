@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 
 const GamepadContext = createContext();
 
@@ -137,8 +137,21 @@ export const GamepadProvider = ({ children }) => {
     if (navigator.vibrate) navigator.vibrate(10);
   }, []);
 
+  const [isLandscape, setIsLandscape] = useState(false);
+  const toggleLandscape = useCallback(() => setIsLandscape(prev => !prev), []);
+
   return (
-    <GamepadContext.Provider value={{ inputState, updateInput, deviceColor, toggleColor, volume, changeVolume, showVolumeOSD }}>
+    <GamepadContext.Provider value={{ 
+      inputState, 
+      updateInput, 
+      deviceColor, 
+      toggleColor,
+      volume,
+      changeVolume,
+      showVolumeOSD,
+      isLandscape,
+      toggleLandscape
+    }}>
       {children}
     </GamepadContext.Provider>
   );

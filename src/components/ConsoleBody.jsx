@@ -2,7 +2,7 @@ import React from 'react';
 import { useGamepad } from '../context/GamepadContext';
 
 const ConsoleBody = ({ children }) => {
-  const { deviceColor, toggleColor, inputState, updateInput, volume, changeVolume, showVolumeOSD } = useGamepad();
+  const { deviceColor, toggleColor, inputState, updateInput, volume, changeVolume, showVolumeOSD, isLandscape } = useGamepad();
   const isWhite = deviceColor === 'white';
   const isGrey = deviceColor === 'grey';
   
@@ -18,6 +18,67 @@ const ConsoleBody = ({ children }) => {
   let edgeShadow = 'inset -1px -1px 2px rgba(0,0,0,0.8), inset 1px 1px 2px rgba(255,255,255,0.1)';
   if (isWhite) edgeShadow = 'inset -1px -1px 2px rgba(0,0,0,0.15), inset 1px 1px 2px rgba(255,255,255,1)';
   if (isGrey) edgeShadow = 'inset -1px -1px 2px rgba(0,0,0,0.4), inset 1px 1px 2px rgba(255,255,255,0.4)';
+
+  if (isLandscape) {
+    return (
+      <div className="fixed inset-0 bg-black z-50 flex items-center justify-center overflow-hidden">
+        
+        {/* The GameScreen component */}
+        <div className="absolute inset-0 z-0">
+          {children[0]}
+        </div>
+
+        {/* The ControlPad component */}
+        {children[1]}
+
+        {/* Start and Select Buttons */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex space-x-16 z-20 pointer-events-auto opacity-40 mix-blend-screen">
+          {/* Select Button */}
+          <div className="flex flex-col items-center space-y-2">
+            <span className="text-[10px] font-sans font-bold tracking-[0.2em] uppercase text-white/50 drop-shadow-md">Select</span>
+            <button 
+              onPointerDown={(e) => { 
+                e.preventDefault(); 
+                try { e.target.setPointerCapture(e.pointerId); } catch(err) {}
+                if (navigator.vibrate) navigator.vibrate(5);
+                updateInput('select', true); 
+              }}
+              onPointerUp={(e) => { 
+                e.preventDefault(); 
+                try { if (e.target.hasPointerCapture(e.pointerId)) e.target.releasePointerCapture(e.pointerId); } catch(err) {}
+                updateInput('select', false); 
+              }}
+              onPointerCancel={(e) => { e.preventDefault(); updateInput('select', false); }}
+              onPointerLeave={(e) => { e.preventDefault(); updateInput('select', false); }}
+              className={`w-14 h-4 rounded-full flex-shrink-0 bg-white/20 border border-white/10 shadow-[0_4px_10px_rgba(0,0,0,0.5)] focus:outline-none transition-all duration-75 ${inputState?.select ? 'scale-95 bg-white/40' : ''} touch-none`}
+            ></button>
+          </div>
+          
+          {/* Start Button */}
+          <div className="flex flex-col items-center space-y-2">
+            <span className="text-[10px] font-sans font-bold tracking-[0.2em] uppercase text-white/50 drop-shadow-md">Start</span>
+            <button 
+              onPointerDown={(e) => { 
+                e.preventDefault(); 
+                try { e.target.setPointerCapture(e.pointerId); } catch(err) {}
+                if (navigator.vibrate) navigator.vibrate(5);
+                updateInput('start', true); 
+              }}
+              onPointerUp={(e) => { 
+                e.preventDefault(); 
+                try { if (e.target.hasPointerCapture(e.pointerId)) e.target.releasePointerCapture(e.pointerId); } catch(err) {}
+                updateInput('start', false); 
+              }}
+              onPointerCancel={(e) => { e.preventDefault(); updateInput('start', false); }}
+              onPointerLeave={(e) => { e.preventDefault(); updateInput('start', false); }}
+              className={`w-14 h-4 rounded-full flex-shrink-0 bg-white/20 border border-white/10 shadow-[0_4px_10px_rgba(0,0,0,0.5)] focus:outline-none transition-all duration-75 ${inputState?.start ? 'scale-95 bg-white/40' : ''} touch-none`}
+            ></button>
+          </div>
+        </div>
+
+      </div>
+    );
+  }
 
   return (
     <div className={`flex items-center justify-center min-h-[100dvh] w-full ${tableBg} overflow-hidden perspective-[1000px] transition-colors duration-500`}>

@@ -50,7 +50,8 @@ const EmulatorWrapper = () => {
       .ejs-ui, .ejs-touch-controls, .ejs-virtual-gamepad, 
       .ejs-menu, .ejs-menu-container,
       div[title="Menu"], div[title="Settings"], div[title="Controls"],
-      div[id^="gamepad"], div[class*="gamepad"] {
+      div[id^="gamepad"], div[class*="gamepad"],
+      #game-container > div:not(canvas):not([id]) {
         display: none !important;
         opacity: 0 !important;
         pointer-events: none !important;
@@ -85,7 +86,7 @@ const EmulatorWrapper = () => {
     
     const keyMap = {
       up: 'ArrowUp', down: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight',
-      a: 'a', b: 'x', x: 's', y: 'z', start: 'Enter', select: 'Shift'
+      a: 'z', b: 'x', x: 's', y: 'a', start: 'Enter', select: 'Shift'
     };
     
     const keyCodeMap = {
@@ -112,9 +113,9 @@ const EmulatorWrapper = () => {
       }
     };
 
-    const accelKey = keyMap['y'];
-    const wasAccelHeld = prevInput.current.y || prevInput.current.x;
-    const isAccelHeld = inputState.y || inputState.x;
+    const accelKey = keyMap['a'];
+    const wasAccelHeld = prevInput.current.a || prevInput.current.x;
+    const isAccelHeld = inputState.a || inputState.x;
 
     // 1. Handle X (NOS) macro triggering
     if (inputState.x && !prevInput.current.x) {
@@ -125,7 +126,7 @@ const EmulatorWrapper = () => {
       setTimeout(() => {
         macroActive.current = false;
         // After macro, restore the state based on whatever is physically pressed NOW
-        if (currentInput.current.y || currentInput.current.x) {
+        if (currentInput.current.a || currentInput.current.x) {
           dispatchKey('keydown', accelKey);
         }
       }, 120);
@@ -142,7 +143,7 @@ const EmulatorWrapper = () => {
 
     // 3. Handle all other keys normally
     Object.keys(inputState).forEach(key => {
-      if (key === 'y' || key === 'x') return; // Handled by the accel state machine above
+      if (key === 'a' || key === 'x') return; // Handled by the accel state machine above
 
       if (inputState[key] && !prevInput.current[key]) {
         dispatchKey('keydown', keyMap[key]);

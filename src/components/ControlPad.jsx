@@ -195,7 +195,7 @@ const ActionButton = ({ active, onDown, onUp, deviceColor, label }) => {
 };
 
 const ControlPad = () => {
-  const { inputState, updateInput, deviceColor } = useGamepad();
+  const { inputState, updateInput, deviceColor, isLandscape } = useGamepad();
   const isWhite = deviceColor === 'white';
   const isGrey = deviceColor === 'grey';
 
@@ -203,24 +203,27 @@ const ControlPad = () => {
   if (isWhite) wellShadow = 'shadow-[inset_1px_2px_4px_rgba(0,0,0,0.15),0_1px_1px_rgba(255,255,255,0.8)]';
   if (isGrey) wellShadow = 'shadow-[inset_2px_3px_5px_rgba(0,0,0,0.5),0_1px_1px_rgba(255,255,255,0.3)]';
 
+  const landscapeContainer = "absolute inset-0 flex justify-between items-end px-12 pb-16 pointer-events-none z-10 mix-blend-screen opacity-50";
+  const portraitContainer = "w-full flex-1 flex flex-col justify-between pt-10 pb-6 relative z-10 px-6 pointer-events-none";
+
   return (
-    <div className="w-full flex-1 flex flex-col justify-between pt-10 pb-6 relative z-10 px-6 pointer-events-none">
+    <div className={isLandscape ? landscapeContainer : portraitContainer}>
       
       {/* Top section: Analog Stick & 4 Action Buttons */}
-      <div className="flex justify-between items-start mt-4 px-2 relative w-full">
+      <div className={`flex justify-between w-full relative ${isLandscape ? 'items-end' : 'items-start mt-4 px-2'}`}>
         
         {/* Analog Joystick */}
         <div 
-          className="relative origin-left pointer-events-auto"
-          style={{ transform: 'scale(calc(min(1.45, (min(100vw, 400px) - 84px) / 224)))' }}
+          className="relative origin-bottom-left pointer-events-auto"
+          style={{ transform: isLandscape ? 'scale(1.5)' : 'scale(calc(min(1.45, (min(100vw, 400px) - 84px) / 224)))' }}
         >
           <AnalogStick deviceColor={deviceColor} />
         </div>
 
         {/* 4 Action Buttons (Diamond Layout) */}
         <div 
-          className="relative w-32 h-32 origin-right pointer-events-auto"
-          style={{ transform: 'scale(calc(min(1.45, (min(100vw, 400px) - 84px) / 224)))' }}
+          className="relative w-32 h-32 origin-bottom-right pointer-events-auto"
+          style={{ transform: isLandscape ? 'scale(1.5)' : 'scale(calc(min(1.45, (min(100vw, 400px) - 84px) / 224)))' }}
         >
           {/* Circular wells with buttons centered inside */}
           <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-11 h-11 rounded-full ${wellShadow} flex items-center justify-center`}>
