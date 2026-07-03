@@ -86,7 +86,11 @@ const AnalogStick = ({ deviceColor }) => {
 
   const handlePointerUp = (e) => {
     e.preventDefault();
-    e.target.releasePointerCapture(e.pointerId);
+    try {
+      if (e.target.hasPointerCapture(e.pointerId)) {
+        e.target.releasePointerCapture(e.pointerId);
+      }
+    } catch(err) {}
     activePointers.current.delete(e.pointerId);
     if (activePointers.current.size === 0) {
       setIsDragging(false);
@@ -168,11 +172,15 @@ const ActionButton = ({ active, onDown, onUp, deviceColor, label }) => {
     <button
       onPointerDown={(e) => { 
         e.preventDefault(); 
-        e.target.setPointerCapture(e.pointerId); 
+        try { e.target.setPointerCapture(e.pointerId); } catch(err) {}
         if (navigator.vibrate) navigator.vibrate(5);
         onDown(); 
       }}
-      onPointerUp={(e) => { e.preventDefault(); e.target.releasePointerCapture(e.pointerId); onUp(); }}
+      onPointerUp={(e) => { 
+        e.preventDefault(); 
+        try { if (e.target.hasPointerCapture(e.pointerId)) e.target.releasePointerCapture(e.pointerId); } catch(err) {}
+        onUp(); 
+      }}
       onPointerCancel={(e) => { e.preventDefault(); onUp(); }}
       onPointerLeave={(e) => { e.preventDefault(); onUp(); }}
       className={`w-[2.15rem] h-[2.15rem] rounded-full flex items-center justify-center select-none touch-none border border-transparent transition-all duration-75 ease-out ${active ? 'scale-[0.92] translate-y-[2px] translate-x-[1px]' : ''} ${btnBg} ${shadow}`}

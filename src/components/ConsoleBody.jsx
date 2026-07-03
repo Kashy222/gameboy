@@ -75,11 +75,15 @@ const ConsoleBody = ({ children }) => {
               <button 
                 onPointerDown={(e) => { 
                   e.preventDefault(); 
-                  e.target.setPointerCapture(e.pointerId); 
+                  try { e.target.setPointerCapture(e.pointerId); } catch(err) {}
                   if (navigator.vibrate) navigator.vibrate(5);
                   updateInput('select', true); 
                 }}
-                onPointerUp={(e) => { e.preventDefault(); e.target.releasePointerCapture(e.pointerId); updateInput('select', false); }}
+                onPointerUp={(e) => { 
+                  e.preventDefault(); 
+                  try { if (e.target.hasPointerCapture(e.pointerId)) e.target.releasePointerCapture(e.pointerId); } catch(err) {}
+                  updateInput('select', false); 
+                }}
                 onPointerCancel={(e) => { e.preventDefault(); updateInput('select', false); }}
                 onPointerLeave={(e) => { e.preventDefault(); updateInput('select', false); }}
                 className={`w-11 h-3.5 rounded-full flex-shrink-0 ${isWhite ? 'bg-[#efefef]' : 'bg-[#1a1a1a]'} ${isWhite ? 'shadow-[2px_3px_4px_rgba(0,0,0,0.25),inset_-1px_-1px_2px_rgba(0,0,0,0.05),inset_1px_1px_2px_rgba(255,255,255,1)]' : 'shadow-[3px_4px_5px_rgba(0,0,0,0.8),inset_-1px_-1px_2px_rgba(0,0,0,0.5),inset_1px_1px_2px_rgba(255,255,255,0.15)]'} focus:outline-none transition-all duration-75 ${inputState?.select ? 'scale-95 translate-y-[2px] translate-x-[1px] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.9)]' : ''} touch-none border border-transparent`}
@@ -92,11 +96,15 @@ const ConsoleBody = ({ children }) => {
               <button 
                 onPointerDown={(e) => { 
                   e.preventDefault(); 
-                  e.target.setPointerCapture(e.pointerId); 
+                  try { e.target.setPointerCapture(e.pointerId); } catch(err) {}
                   if (navigator.vibrate) navigator.vibrate(5);
                   updateInput('start', true); 
                 }}
-                onPointerUp={(e) => { e.preventDefault(); e.target.releasePointerCapture(e.pointerId); updateInput('start', false); }}
+                onPointerUp={(e) => { 
+                  e.preventDefault(); 
+                  try { if (e.target.hasPointerCapture(e.pointerId)) e.target.releasePointerCapture(e.pointerId); } catch(err) {}
+                  updateInput('start', false); 
+                }}
                 onPointerCancel={(e) => { e.preventDefault(); updateInput('start', false); }}
                 onPointerLeave={(e) => { e.preventDefault(); updateInput('start', false); }}
                 className={`w-11 h-3.5 rounded-full flex-shrink-0 ${isWhite ? 'bg-[#efefef]' : 'bg-[#1a1a1a]'} ${isWhite ? 'shadow-[2px_3px_4px_rgba(0,0,0,0.25),inset_-1px_-1px_2px_rgba(0,0,0,0.05),inset_1px_1px_2px_rgba(255,255,255,1)]' : 'shadow-[3px_4px_5px_rgba(0,0,0,0.8),inset_-1px_-1px_2px_rgba(0,0,0,0.5),inset_1px_1px_2px_rgba(255,255,255,0.15)]'} focus:outline-none transition-all duration-75 ${inputState?.start ? 'scale-95 translate-y-[2px] translate-x-[1px] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.9)]' : ''} touch-none border border-transparent`}
