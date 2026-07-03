@@ -109,10 +109,13 @@ const ControlPad = () => {
     <div className="w-full flex-1 flex flex-col justify-between pt-10 pb-6 relative z-10 px-6">
       
       {/* Top section: D-Pad & 4 Action Buttons */}
-      <div className="flex justify-between items-start mt-4 px-2">
+      <div className="flex justify-between items-start mt-4 px-2 relative w-full">
         
         {/* D-Pad */}
-        <div className="relative w-28 h-28 transform scale-[1.35] sm:scale-110 origin-left ml-2">
+        <div 
+          className="relative w-28 h-28 origin-left"
+          style={{ transform: 'scale(calc(min(1.45, (min(100vw, 400px) - 84px) / 224)))' }}
+        >
           
           {/* Main Cross Background */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[28px] h-full bg-[#1c1c1c] rounded-sm shadow-[inset_-1px_-1px_2px_rgba(0,0,0,0.5),inset_1px_1px_2px_rgba(255,255,255,0.1)]"></div>
@@ -147,7 +150,10 @@ const ControlPad = () => {
         </div>
 
         {/* 4 Action Buttons (Diamond Layout) */}
-        <div className="relative w-28 h-28 transform scale-[1.35] sm:scale-110 origin-right mr-2">
+        <div 
+          className="relative w-28 h-28 origin-right"
+          style={{ transform: 'scale(calc(min(1.45, (min(100vw, 400px) - 84px) / 224)))' }}
+        >
           {/* Circular wells */}
           <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-9 h-9 rounded-full ${wellShadow}`}></div>
           <div className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-9 h-9 rounded-full ${wellShadow}`}></div>
