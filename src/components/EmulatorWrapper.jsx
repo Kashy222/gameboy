@@ -48,12 +48,13 @@ const EmulatorWrapper = () => {
     style.id = 'ejs-hide-gamepad';
     style.innerHTML = `
       .ejs-ui, .ejs-touch-controls, .ejs-virtual-gamepad, 
-      div[style*="touch-action: none"][style*="z-index"],
-      div[id^="gamepad"], div[class*="gamepad"],
-      div[title="Menu"], .ejs-menu, div[style*="z-index: 1000000"] {
+      .ejs-menu, .ejs-menu-container,
+      div[title="Menu"], div[title="Settings"], div[title="Controls"],
+      div[id^="gamepad"], div[class*="gamepad"] {
         display: none !important;
         opacity: 0 !important;
         pointer-events: none !important;
+        visibility: hidden !important;
         z-index: -9999 !important;
       }
     `;
@@ -134,7 +135,7 @@ const EmulatorWrapper = () => {
   }, [inputState, webMode]);
 
   if (isPlaying) {
-    return <div id="game-container" className="w-full h-full bg-black relative overflow-hidden pointer-events-none"></div>;
+    return <div id="game-container" className="w-full h-full bg-black relative overflow-hidden"></div>;
   }
 
   return (
