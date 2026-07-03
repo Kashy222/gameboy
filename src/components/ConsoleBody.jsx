@@ -51,8 +51,9 @@ const ConsoleBody = ({ children }) => {
             <div className="flex flex-col items-center space-y-2">
               <span className={`text-[9px] font-sans font-bold tracking-[0.2em] uppercase ${isWhite ? 'text-[#a0a0a0]' : 'text-[#444]'}`}>Select</span>
               <button 
-                onPointerDown={(e) => { e.preventDefault(); updateInput('select', true); }}
-                onPointerUp={(e) => { e.preventDefault(); updateInput('select', false); }}
+                onPointerDown={(e) => { e.preventDefault(); e.target.setPointerCapture(e.pointerId); updateInput('select', true); }}
+                onPointerUp={(e) => { e.preventDefault(); e.target.releasePointerCapture(e.pointerId); updateInput('select', false); }}
+                onPointerCancel={(e) => { e.preventDefault(); updateInput('select', false); }}
                 onPointerLeave={(e) => { e.preventDefault(); updateInput('select', false); }}
                 className={`w-11 h-3.5 rounded-full flex-shrink-0 ${isWhite ? 'bg-[#efefef]' : 'bg-[#1a1a1a]'} ${isWhite ? 'shadow-[2px_3px_4px_rgba(0,0,0,0.25),inset_-1px_-1px_2px_rgba(0,0,0,0.05),inset_1px_1px_2px_rgba(255,255,255,1)]' : 'shadow-[3px_4px_5px_rgba(0,0,0,0.8),inset_-1px_-1px_2px_rgba(0,0,0,0.5),inset_1px_1px_2px_rgba(255,255,255,0.15)]'} focus:outline-none transition-all duration-75 ${inputState?.select ? 'scale-95 translate-y-[2px] translate-x-[1px] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.9)]' : ''} touch-none border border-transparent`}
               ></button>
@@ -62,8 +63,9 @@ const ConsoleBody = ({ children }) => {
             <div className="flex flex-col items-center space-y-2">
               <span className={`text-[9px] font-sans font-bold tracking-[0.2em] uppercase ${isWhite ? 'text-[#a0a0a0]' : 'text-[#444]'}`}>Start</span>
               <button 
-                onPointerDown={(e) => { e.preventDefault(); updateInput('start', true); }}
-                onPointerUp={(e) => { e.preventDefault(); updateInput('start', false); }}
+                onPointerDown={(e) => { e.preventDefault(); e.target.setPointerCapture(e.pointerId); updateInput('start', true); }}
+                onPointerUp={(e) => { e.preventDefault(); e.target.releasePointerCapture(e.pointerId); updateInput('start', false); }}
+                onPointerCancel={(e) => { e.preventDefault(); updateInput('start', false); }}
                 onPointerLeave={(e) => { e.preventDefault(); updateInput('start', false); }}
                 className={`w-11 h-3.5 rounded-full flex-shrink-0 ${isWhite ? 'bg-[#efefef]' : 'bg-[#1a1a1a]'} ${isWhite ? 'shadow-[2px_3px_4px_rgba(0,0,0,0.25),inset_-1px_-1px_2px_rgba(0,0,0,0.05),inset_1px_1px_2px_rgba(255,255,255,1)]' : 'shadow-[3px_4px_5px_rgba(0,0,0,0.8),inset_-1px_-1px_2px_rgba(0,0,0,0.5),inset_1px_1px_2px_rgba(255,255,255,0.15)]'} focus:outline-none transition-all duration-75 ${inputState?.start ? 'scale-95 translate-y-[2px] translate-x-[1px] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.9)]' : ''} touch-none border border-transparent`}
               ></button>

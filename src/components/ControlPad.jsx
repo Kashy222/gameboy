@@ -31,8 +31,9 @@ const ActionButton = ({ active, onDown, onUp, deviceColor, label }) => {
 
   return (
     <button
-      onPointerDown={(e) => { e.preventDefault(); onDown(); }}
-      onPointerUp={(e) => { e.preventDefault(); onUp(); }}
+      onPointerDown={(e) => { e.preventDefault(); e.target.setPointerCapture(e.pointerId); onDown(); }}
+      onPointerUp={(e) => { e.preventDefault(); e.target.releasePointerCapture(e.pointerId); onUp(); }}
+      onPointerCancel={(e) => { e.preventDefault(); onUp(); }}
       onPointerLeave={(e) => { e.preventDefault(); onUp(); }}
       className={`w-[1.8rem] h-[1.8rem] rounded-full flex items-center justify-center select-none touch-none border border-transparent transition-all duration-75 ease-out ${active ? 'scale-[0.92] translate-y-[2px] translate-x-[1px]' : ''} ${btnBg} ${shadow}`}
     >
@@ -69,8 +70,9 @@ const DPadButton = ({ active, onDown, onUp, className, deviceColor }) => {
 
   return (
     <button
-      onPointerDown={(e) => { e.preventDefault(); onDown(); }}
-      onPointerUp={(e) => { e.preventDefault(); onUp(); }}
+      onPointerDown={(e) => { e.preventDefault(); e.target.setPointerCapture(e.pointerId); onDown(); }}
+      onPointerUp={(e) => { e.preventDefault(); e.target.releasePointerCapture(e.pointerId); onUp(); }}
+      onPointerCancel={(e) => { e.preventDefault(); onUp(); }}
       onPointerLeave={(e) => { e.preventDefault(); onUp(); }}
       className={`absolute transition-all duration-75 ease-out select-none touch-none ${active ? 'scale-[0.92] translate-y-[2px] translate-x-[1px]' : ''} ${className} ${bgClass} ${shadow} z-10`}
     >
@@ -159,7 +161,7 @@ const ControlPad = () => {
         </div>
 
         {/* 4 Action Buttons (Diamond Layout) */}
-        <div className="relative w-28 h-28 transform scale-[1.15] sm:scale-110 origin-right mr-2">
+        <div className="relative w-28 h-28 transform scale-[1.25] sm:scale-110 origin-right mr-2">
           {/* Circular wells */}
           <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-9 h-9 rounded-full ${wellShadow}`}></div>
           <div className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-9 h-9 rounded-full ${wellShadow}`}></div>

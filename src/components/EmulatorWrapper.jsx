@@ -115,7 +115,7 @@ const EmulatorWrapper = () => {
   }, [inputState, webMode]);
 
   if (isPlaying) {
-    return <div id="game-container" className="w-full h-full bg-black relative overflow-hidden"></div>;
+    return <div id="game-container" className="w-full h-full bg-black relative overflow-hidden pointer-events-none"></div>;
   }
 
   return (
